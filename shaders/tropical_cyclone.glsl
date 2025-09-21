@@ -8,13 +8,13 @@ uniform sampler2D imageTexture;
 out vec4 color;
 
 //Added some custom pparameters
-uniform float time, entityScale, rotSpeed, swingArms;
+uniform float time, fadeScale, rotVelocity, swingArms, density, moveSpeed;
 uniform vec2 resolution;
 uniform vec3 bgColor1, bgColor2;
 
 float orb(vec3 p) {
     // orb time
-    float t = time * 4.;
+    float t = time * .1;
     return length(p - vec3(
             sin(sin(t*.2)+t*.4) * 6.,
             1.+sin(sin(t*.5)+t*.2) *4.,
@@ -36,7 +36,7 @@ void hurricane(out vec4 o, vec2 u) {
     for(o*=i; i++<128.;
 
         // accumulate distance
-        d += s = min(.03+.2*abs(s),e=max(.5*e, .01)),
+        d += s = min(.03+.2*abs(s),e=max(.5*e, .01)) * density,
 
         // grayscale color and orb light
         o += 1./(s+e*3.))
@@ -45,10 +45,10 @@ void hurricane(out vec4 o, vec2 u) {
         for (p = vec3(u*d,d+t), // p = ro + rd *d, p.z + t;
 
             // entity (orb)
-            e = orb(p)+entityScale,
+            e = orb(p)+fadeScale,
 
             // spin by t, twist by p.z
-            p.xy *= mat2(cos(rotSpeed*t + p.z/swingArms + vec4(0,33,11,0))),
+            p.xy *= mat2(cos(rotVelocity*t + p.z/swingArms + vec4(0,33,11,0))),
 
             // mirrored planes 4 units apart
             s = 4. - abs(p.y),
@@ -60,7 +60,7 @@ void hurricane(out vec4 o, vec2 u) {
             p += cos(.7*t+p.yzx)*.2,
 
             // apply noise
-            s -= abs(dot(sin(.1*t+p * a ), .6+p-p)) / a;
+            s -= abs(dot(sin(moveSpeed*t+p * a ), .6+p-p)) / a;
 
     // tanh tonemap, brightness, light off-screen
     o = tanh(o/1e1);

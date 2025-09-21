@@ -1,24 +1,55 @@
 """
 SID: 25098892g
 NAME: LUO DONGPU
+
+A Visualization window which manages main pygame events
 """
 
 import pygame
+from pygame.surface import Surface
+from pygame.color import Color
 import pygame_shaders
 from pygame_shaders import Shader
 import time
-import tkparam
 from pyglm import glm
-
-pygame.init()
-param_win = tkparam.TKParamWindow()
-entity_scale = param_win.get_scalar("entity scale", 2.8856, 3, 80)
-rot_speed = param_win.get_scalar("rot speed", 0.1, 0, 10)
-swing_arms = param_win.get_scalar("swing arms", 5.4526, 0.1, 20)
-bg_color1 = (49.0/255, 71.0/255, 85.0/255)
-bg_color2 = (38.0/255, 160.0/255, 218.0/255)
 
 
 class TCVisualWindow:
-    def __init__(self):
-        ...
+    def __init__(self, resolution: tuple = (960, 540), title: str = "Tropical cyclone visualizer"):
+        self.resolution: tuple = resolution
+        self.title: str = title
+
+        pygame.display.set_mode(resolution, pygame.DOUBLEBUF | pygame.OPENGL)
+        pygame.display.set_caption(title)
+
+        self.display: Surface = Surface(resolution)
+        self.clock = pygame.time.Clock()
+        self.__screen_shader = pygame_shaders.DefaultScreenShader(self.display)
+        self.__app_start_time: float = time.time()
+        self.app_time: float = 0  # accumulated time since app start
+        self.delta_time: float = 0  # time since last frame
+
+        self.clear_display_color = Color(0, 0, 0, 255)
+
+    @staticmethod
+    def handle_events() -> bool:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return True
+        return False
+
+    def early_update(self):
+        """
+        Update import data (time etc) at first of a frame
+        """
+        self.display.fill(self.clear_display_color)
+        self.app_time = time.time() - self.__app_start_time
+        self.delta_time = self.clock.get_time() / 1000.0
+
+    def final_blit_event(self):
+        self.__screen_shader.render()
+        pygame.display.flip()
+        self.clock.tick()
+
+    def quit(self):
+        pass

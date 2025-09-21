@@ -29,7 +29,8 @@ class TCData:
     def __init__(self):
         self.id: int = 0
         self.tc_type: str = ""
-        self.tc_name: str = ""
+        self.tc_name_ch: str = ""
+        self.tc_name_en: str = ""
         self.tc_signal: int = 0
         self.tc_signal_direction: str = ""
         self.tc_start_date: datetime.date = None
@@ -113,9 +114,11 @@ class TCDataFetcher:
         else:
             record.tc_type = TCDataFetcher.tc_type2name[raw[1]]
         if raw[2] not in self.tc_name_list:
-            record.tc_name = "Name Unknown"
+            record.tc_name_en = "Name Unknown"
+            record.tc_name_ch = "未知"
         else:
-            record.tc_name = self.tc_name_list[raw[2]]
+            record.tc_name_en = raw[2]
+            record.tc_name_ch = self.tc_name_list[raw[2]]
         record.tc_signal = eval(raw[3])
         record.tc_signal_direction = "" if raw[4] == "X" else raw[4]
         record.tc_start_date = datetime.date(day=eval(raw[6]), month=eval(raw[7]), year=eval(raw[8]))
