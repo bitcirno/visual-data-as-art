@@ -8,7 +8,8 @@ uniform sampler2D imageTexture;
 out vec4 color;
 
 //Added some custom pparameters
-uniform float time, fadeScale, rotVelocity, swingArms, density, moveSpeed;
+uniform float time;
+uniform float fadeScale, rotVelocity, swingArms, density, moveSpeed, noiseDetail;
 uniform vec2 resolution;
 uniform vec3 bgColor1, bgColor2;
 
@@ -57,10 +58,10 @@ void hurricane(out vec4 o, vec2 u) {
             a = .8; a < 32.; a += a)
 
             // apply turbulence
-            p += cos(.7*t+p.yzx)*.2,
+            p += cos(noiseDetail*t+p.yzx)*.2,
 
             // apply noise
-            s -= abs(dot(sin(moveSpeed*t+p * a ), .6+p-p)) / a;
+            s -= abs(dot(sin(moveSpeed*t+p * a), .6+p-p)) / a;
 
     // tanh tonemap, brightness, light off-screen
     o = tanh(o/1e1);

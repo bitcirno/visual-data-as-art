@@ -18,6 +18,7 @@ rot_speed = param_win.get_scalar("rot speed", 0.1, 0, 100)
 swing_arms = param_win.get_scalar("swing arms", 5.4526, 0.1, 20)
 density = param_win.get_scalar("density", 1, 0.1, 5)
 move_speed = param_win.get_scalar("move speed", 0.1, 0, 20)
+noise_scale = param_win.get_scalar("noise detail", 0.7, 0, 20)
 bg_color1 = (49.0/255, 71.0/255, 85.0/255)
 bg_color2 = (38.0/255, 160.0/255, 218.0/255)
 
@@ -59,6 +60,7 @@ while is_running:
     hurricane_shader.send("swingArms", swing_arms.get())
     hurricane_shader.send("density", density.get())
     hurricane_shader.send("moveSpeed", move_speed.get())
+    hurricane_shader.send("noiseDetail", noise_scale.get())
     hurricane = hurricane_shader.render()
     display.blit(hurricane, (0, 0))
 

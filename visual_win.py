@@ -28,14 +28,19 @@ class TCVisualWindow:
         self.__app_start_time: float = time.time()
         self.app_time: float = 0  # accumulated time since app start
         self.delta_time: float = 0  # time since last frame
-
         self.clear_display_color = Color(0, 0, 0, 255)
 
-    @staticmethod
-    def handle_events() -> bool:
+        # events
+        self.is_left_pointer_down: bool = False  # is pointer down this frame?
+
+    def handle_events(self) -> bool:
+        self.is_left_pointer_down = False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    self.is_left_pointer_down = True
         return False
 
     def early_update(self):
