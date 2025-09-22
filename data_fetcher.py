@@ -29,6 +29,7 @@ class TCData:
     def __init__(self):
         self.id: int = 0
         self.tc_type: str = ""
+        self.tc_type_short: str = ""
         self.tc_name_ch: str = ""
         self.tc_name_en: str = ""
         self.tc_signal: int = 0
@@ -111,8 +112,10 @@ class TCDataFetcher:
         record.id = eval(raw[0])
         if raw[1] not in TCDataFetcher.tc_type2name:
             record.tc_type = "Type Unknown"
+            record.tc_type_short = "TS"  # using default
         else:
             record.tc_type = TCDataFetcher.tc_type2name[raw[1]]
+            record.tc_type_short = raw[1]
         if raw[2] not in self.tc_name_list:
             record.tc_name_en = "Name Unknown"
             record.tc_name_ch = "未知"

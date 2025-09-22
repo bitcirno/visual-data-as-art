@@ -5,17 +5,24 @@ in vec2 fragmentTexCoord;
 uniform sampler2D imageTexture;
 
 uniform float scale;  // diameter. maximum value is 1
-uniform float smoothDist;
+uniform float smoothDist, alphaLerp;
 uniform vec4 color;
+uniform vec2 resolution;
 
 vec2 enter = vec2(0.5, 0.5);
 
 void main() {
+    vec2 uv = fragmentTexCoord;
     float d = min(scale, 0.99);
     float r = d * 0.5;
-    float l = length(fragmentTexCoord - enter);
+    float l = length(uv - enter);
     float c = 1 - smoothstep(max(0, r-smoothDist), min(1, r+smoothDist), l);
     vec4 col = color * c;
-    col.a = c;
+
+    float inter = uv.x * uv.x;
+    float alphaMul = smoothstep(0.08, 0.6, inter);
+    alphaMul = mix(1, alphaMul, alphaLerp);
+
+    col.a = c * alphaMul;
     gl_FragColor = col;
 }

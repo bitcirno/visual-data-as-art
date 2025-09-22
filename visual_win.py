@@ -15,9 +15,10 @@ from pyglm import glm
 
 
 class TCVisualWindow:
-    def __init__(self, resolution: tuple = (960, 540), title: str = "Tropical cyclone visualizer"):
+    def __init__(self, resolution: tuple = (960, 540), title: str = "Tropical cyclone visualizer", fps: int = 120):
         self.resolution: tuple = resolution
         self.title: str = title
+        self.fps: int = fps
 
         pygame.display.set_mode(resolution, pygame.DOUBLEBUF | pygame.OPENGL)
         pygame.display.set_caption(title)
@@ -54,7 +55,7 @@ class TCVisualWindow:
     def final_blit_event(self):
         self.__screen_shader.render()
         pygame.display.flip()
-        self.clock.tick()
+        self.clock.tick(self.fps)
 
     def quit(self):
         pass

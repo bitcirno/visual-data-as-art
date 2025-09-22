@@ -15,6 +15,7 @@ from visual_win import TCVisualWindow
 from context import AppContext
 from tween import Tween, Ease
 from utils import *
+from copy import deepcopy
 
 
 class TCBgProfile:
@@ -70,8 +71,9 @@ class TCBackground(AppComponent):
                               density=0.2298, move_speed=5.5949),
             "SuperT": TCBgProfile()
         }
-        self.cur_profile: TCBgProfile = TCBgProfile()
-        self.apply_profile(self.cur_profile)  # use the default profile
+        default_type = "TS"
+        self.cur_profile: TCBgProfile = deepcopy(self.tc_type_profile[default_type])
+        self.apply_profile_by_tc_type(default_type)  # use the default profile
 
         self.trigger = False
 
@@ -103,13 +105,13 @@ class TCBackground(AppComponent):
         self.cur_profile.move_speed = v
         self.efx_shader.send("moveSpeed", v)
 
-    def __update_detail(self, v:float):
+    def __update_detail(self, v: float):
         self.cur_profile.noise_detail = v
         self.efx_shader.send("noiseDetail", v)
 
-    def apply_profile(self, profile: TCBgProfile):
+    def apply_profile_by_tc_type(self, tc_type: str):
         c = self.cur_profile
-        d = profile
+        d = self.tc_type_profile[tc_type]
 
         # apply smooth transition
         duration = 3
@@ -124,22 +126,11 @@ class TCBackground(AppComponent):
 
     def render(self):
         self.efx_shader.send("time", self.ctx.win.app_time)
-        hurricane = self.efx_shader.render()
+        hurricane = self.efx_shader.render(False)
         self.ctx.win.display.blit(hurricane, self.rect)
 
     def update(self):
-        pointer_pos = pygame.mouse.get_pos()
-        if pointer_pos[0] < 30:
-            if not self.trigger:
-                self.trigger = True
-                self.apply_profile(self.tc_type_profile["TS"])
-                print("-> TS")
-        elif pointer_pos[0] > 200:
-            if self.trigger:
-                self.trigger = False
-                self.apply_profile(self.tc_type_profile["ST"])
-                print("-> ST")
-        pass
+        ...
 
 
 
