@@ -11,8 +11,10 @@ class AppContext:
         self.win: TCVisualWindow = win
         self.data_fetcher: TCDataFetcher = data_fetcher
         self.tkp = tkparam.TKParamWindow()
+
         self.bg = None
         self.node_list = None
+        self.info_display = None
 
         # debugging parameters
         self.date_node_size_per = 0.08
@@ -38,8 +40,16 @@ class AppContext:
         resoH = win.resolution[1]
         self.node_date_font = pygame.font.Font("font/ANTQUABI.TTF", round(resoH*15/540))
         self.node_date_label_font = pygame.font.Font("font/ANTQUABI.TTF", round(resoH*8/540))
-        self.info_month_txt_font = pygame.font.Font("font/ANTQUABI.TTF", round(resoH*52/540))
-        self.info_month_label_font = pygame.font.Font("font/ANTQUABI.TTF", round(resoH*18/540))
+        self.info_month_txt_font = pygame.font.Font("font/ANTQUABI.TTF", round(resoH*42/540))
+        self.info_month_label_font = pygame.font.Font("font/ANTQUABI.TTF", round(resoH*12/540))
+        self.info_tc_name_ch_font = pygame.font.Font("font/NotoSerifCJKsc-Medium.otf", round(resoH*50/540))
+        self.info_tc_name_en_font = pygame.font.Font("font/NotoSerifCJKsc-Medium.otf", round(resoH*30/540))
+        self.info_tc_type_font = pygame.font.Font("font/BOD_CI.TTF", round(resoH*22/540))
+
+        self.info_pos_left_per = 0.06
+        self.info_pos_top_per = 0.05
+        self.info_tc_name_offsetX = 0.5
+        self.info_tc_name_offset_duration = 1.1
 
     def close(self):
         self.tkp.quit()

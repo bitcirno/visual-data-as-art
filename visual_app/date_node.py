@@ -107,6 +107,9 @@ class DateNode(AppButton):
         # set visual profile
         self.ctx.bg.apply_profile_by_tc_type(self.tc_data.tc_type_short)
 
+        # update info display
+        self.ctx.info_display.set_display_data(self.tc_data)
+
     def on_exit(self):
         # print(f"exit {self.text}")
         duration = self.sel_node_duration
