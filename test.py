@@ -13,16 +13,17 @@ from pyglm import glm
 pygame.init()
 
 param_win = tkparam.TKParamWindow()
-fade_scale = param_win.get_scalar("fade scale", 2.8856, 3, 80)
+fade_scale = param_win.get_scalar("fade scale", 3.0, 0, 80)
 rot_speed = param_win.get_scalar("rot speed", 0.1, 0, 100)
 swing_arms = param_win.get_scalar("swing arms", 5.4526, 0.1, 20)
 density = param_win.get_scalar("density", 1, 0.1, 5)
 move_speed = param_win.get_scalar("move speed", 0.1, 0, 20)
-noise_scale = param_win.get_scalar("noise detail", 0.7, 0, 20)
-bg_color1 = (49.0/255, 71.0/255, 85.0/255)
-bg_color2 = (38.0/255, 160.0/255, 218.0/255)
+noise_scale = param_win.get_scalar("noise detail", 2.6, 0, 20)
+bg_color1 = pygame.Color(49, 71, 85, 255)
+bg_color2 = pygame.Color(38, 160, 218, 255)
 
 resolution = (960, 540)
+fps = 60
 pygame.display.set_mode(resolution, pygame.DOUBLEBUF | pygame.OPENGL)
 display = pygame.surface.Surface(resolution)
 
@@ -30,8 +31,8 @@ clock = pygame.time.Clock()
 
 hurricane_shader = Shader(pygame_shaders.DEFAULT_VERTEX_SHADER, "shaders/tropical_cyclone.glsl", display)
 hurricane_shader.send("resolution", resolution)
-hurricane_shader.send("bgColor1", bg_color1)
-hurricane_shader.send("bgColor2", bg_color2)
+hurricane_shader.send("bgColor1", bg_color1.normalize())
+hurricane_shader.send("bgColor2", bg_color2.normalize())
 
 screen_shader = pygame_shaders.DefaultScreenShader(display)
 
@@ -45,7 +46,7 @@ def recompile_shader(mod_shader, vertex_path, fragment_path):
 
 while is_running:
     shader_time = time.time() - start_time
-    display.fill((255, 255, 0))
+    display.fill((0, 0, 0))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -66,7 +67,7 @@ while is_running:
 
     screen_shader.render()  # finally blit display surface to OpenGL screen
     pygame.display.flip()
-    clock.tick()
+    clock.tick(fps)
 
 
 pygame.quit()

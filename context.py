@@ -48,7 +48,7 @@ class AppContext:
 
         self.info_pos_left_per = 0.06
         self.info_pos_top_per = 0.05
-        self.info_tc_name_offsetX = 0.5
+        self.info_tc_name_offsetX = 0.1
         self.info_tc_name_offset_duration = 1.1
 
     def close(self):

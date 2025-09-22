@@ -49,16 +49,16 @@ class InfoDisplayer(AppComponent):
         self.tc_ch_name_rect = self.tc_ch_name.get_rect()
         self.tc_en_name_rect = self.tc_en_name.get_rect()
         self.tc_type_rect = self.tc_type.get_rect()
+        self.tc_ch_name_rect.topleft = self.rect.topleft
         self.__update_relative_rect()
 
         duration = self.ctx.info_tc_name_offset_duration
         offset = self.ctx.info_tc_name_offsetX * self.ctx.win.resolution[0]
         self.rect_tween.to_float(self.rect.x-offset, self.rect.x,
-                                 duration, self.__update_text_rect, ease=Ease.OutCubic)
+                                 duration*0.3, self.__update_text_rect, ease=Ease.OutCubic)
         self.fade_tween.to_float(0.0, 255.0, duration, self.__update_alpha, ease=Ease.OutQuad)
 
     def __update_relative_rect(self):
-        self.tc_ch_name_rect.topleft = self.rect.topleft
         self.tc_en_name_rect.topleft = self.tc_ch_name_rect.bottomleft
         self.tc_type_rect.topleft = self.tc_ch_name_rect.topright
 

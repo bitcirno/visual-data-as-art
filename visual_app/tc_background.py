@@ -20,17 +20,18 @@ from copy import deepcopy
 
 class TCBgProfile:
     """
-    Tropical cyclone background profile class
+    Tropical cyclone background profile class, Tropical Storm (TS) pprofile as default
     """
+
     def __init__(self,
-                 col1: Color = Color(49, 71, 85, 255),
-                 col2: Color = Color(38, 160, 218, 255),
+                 col1: Color = Color(49, 75, 85, 255),
+                 col2: Color = Color(107, 167, 105, 255),
+                 fade_scale: float = 3.0,
                  rot_velocity: float = 0.1,
-                 swing_arms: float = 8.0,
-                 fade_scale: float = 2.8856,
+                 swing_arms: float = 5.4526,
                  density: float = 1.0,
                  move_speed: float = 0.1,
-                 noise_detail: float = 0.7):
+                 noise_detail: float = 2.5):
         self.bg_col1: Color = col1
         self.bg_col2: Color = col2
         self.rot_velocity: float = rot_velocity
@@ -62,14 +63,29 @@ class TCBackground(AppComponent):
 
         # profiles defining background effect parameters
         self.tc_type_profile = {
-            "TD": TCBgProfile(col1=Color(255, 255, 255, 255),
-                              fade_scale=19.663, rot_velocity=0.0, swing_arms=18.408),
-            "TS": TCBgProfile(),
-            "STS": TCBgProfile(),
-            "T": TCBgProfile(),
-            "ST": TCBgProfile(fade_scale=3.0, rot_velocity=7.51, swing_arms=5.2,
-                              density=0.2298, move_speed=5.5949),
-            "SuperT": TCBgProfile()
+            "TD": TCBgProfile(col1=Color(45, 171, 185, 255), col2=Color(39, 80, 144, 255),
+                              fade_scale=7, rot_velocity=0.1, swing_arms=12.408,
+                              density=1.57, move_speed=0.05, noise_detail=0.0),
+
+            "TS": TCBgProfile(col1=Color(49, 71, 85, 255), col2=Color(56, 178, 221, 255),
+                              fade_scale=3.0, rot_velocity=0.1, swing_arms=5.4526,
+                              density=1.0, move_speed=0.1, noise_detail=2.5),  # Default
+
+            "STS": TCBgProfile(col1=Color(49, 71, 85, 255), col2=Color(38, 160, 218, 255),
+                               fade_scale=4, rot_velocity=2.2, swing_arms=3.55,
+                               density=0.5714, move_speed=1.32, noise_detail=2.8336),
+
+            "T": TCBgProfile(col1=Color(49, 71, 85, 255), col2=Color(38, 160, 218, 255),
+                             fade_scale=3.3, rot_velocity=5, swing_arms=3.0,
+                             density=0.58, move_speed=6.88, noise_detail=4.2),
+
+            "ST": TCBgProfile(col1=Color(16, 40, 56, 255), col2=Color(56, 117, 218, 255),
+                              fade_scale=2.07, rot_velocity=10, swing_arms=1.345,
+                              density=0.4121, move_speed=12.3,  noise_detail=5),
+
+            "SuperT": TCBgProfile(col1=Color(25, 18, 16, 255), col2=Color(83, 93, 221, 255),
+                                  fade_scale=1.2, rot_velocity=16, swing_arms=0.7,
+                                  density=0.3, move_speed=18.1, noise_detail=17.7)
         }
         default_type = "TS"
         self.cur_profile: TCBgProfile = deepcopy(self.tc_type_profile[default_type])
@@ -131,7 +147,3 @@ class TCBackground(AppComponent):
 
     def update(self):
         ...
-
-
-
-

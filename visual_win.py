@@ -29,7 +29,7 @@ class TCVisualWindow:
         self.__app_start_time: float = time.time()
         self.app_time: float = 0  # accumulated time since app start
         self.delta_time: float = 0  # time since last frame
-        self.clear_display_color = Color(0, 0, 0, 255)
+        self.clear_display_color = Color(0, 0, 0)
 
         # events
         self.is_left_pointer_down: bool = False  # is pointer down this frame?
