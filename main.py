@@ -4,10 +4,12 @@ NAME: LUO DONGPU
 
 The main loop of the tropical-cyclone-visualizer application
 """
-import datetime
 
+import math
+import datetime
 import pygame
 import pygame_shaders
+from pygame.rect import Rect
 
 from data_fetcher import TCDataFetcher
 from visual_win import TCVisualWindow
@@ -23,8 +25,10 @@ win = TCVisualWindow()  # Initialize the visual window
 ctx = AppContext(win, data_fetcher)  # build application contex
 
 # Initialize the application components
-# bg = TCBackground(ctx, "shaders/tropical_cyclone.glsl")
-node = DateNode(ctx, datetime.datetime.now(), "shaders/date_node.glsl")
+# bg = TCBackground(ctx, Rect(0, 0, *win.resolution), "shaders/tropical_cyclone.glsl")
+size = math.floor(ctx.win.resolution[1] * ctx.date_node_sel_size_per.get())
+node = DateNode(ctx, Rect(win.resolution[0]/2, win.resolution[1]/2, size, size),
+                datetime.datetime.now(), "shaders/date_node.glsl")
 
 # Main loop of the application
 is_running = True

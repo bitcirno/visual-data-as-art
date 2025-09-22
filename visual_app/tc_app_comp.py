@@ -11,9 +11,9 @@ from context import AppContext
 
 
 class AppComponent:
-    def __init__(self, ctx: AppContext, size: tuple):
+    def __init__(self, ctx: AppContext, rect: Rect):
         self.ctx: AppContext = ctx
-        self.rect: Rect = Rect(0, 0, *size)
+        self.rect: Rect = rect
 
     @abstractmethod
     def update(self):
@@ -31,8 +31,8 @@ class AppComponent:
 
 
 class AppButton(AppComponent):
-    def __init__(self, ctx: AppContext, size: tuple, text: str):
-        super().__init__(ctx, size)
+    def __init__(self, ctx: AppContext, rect: Rect, text: str):
+        super().__init__(ctx, rect)
         self.text: str = text
         self.is_hover = False  # is the pointer hovering the button?
 

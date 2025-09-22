@@ -45,8 +45,8 @@ class TCBackground(AppComponent):
     Tropical cyclone background class
     """
 
-    def __init__(self, ctx: AppContext, frag_shader_path: str):
-        super().__init__(ctx, ctx.win.resolution)
+    def __init__(self, ctx: AppContext, rect: Rect, frag_shader_path: str):
+        super().__init__(ctx, rect)
         self.efx_shader = Shader(pygame_shaders.DEFAULT_VERTEX_SHADER, frag_shader_path, ctx.win.display)
         self.efx_shader.send("resolution", ctx.win.resolution)
 
@@ -77,11 +77,11 @@ class TCBackground(AppComponent):
 
     def __update_col1(self, color: Color):
         self.cur_profile.bg_col1 = color
-        self.efx_shader.send("bgColor1", color_to_01_tuple3(color))
+        self.efx_shader.send("bgColor1", color.normalize())
 
     def __update_col2(self, color: Color):
         self.cur_profile.bg_col2 = color
-        self.efx_shader.send("bgColor2", color_to_01_tuple3(color))
+        self.efx_shader.send("bgColor2", color.normalize())
 
     def __update_fade(self, v: float):
         self.cur_profile.fade_scale = v

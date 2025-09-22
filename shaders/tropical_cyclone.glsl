@@ -11,7 +11,7 @@ out vec4 color;
 uniform float time;
 uniform float fadeScale, rotVelocity, swingArms, density, moveSpeed, noiseDetail;
 uniform vec2 resolution;
-uniform vec3 bgColor1, bgColor2;
+uniform vec4 bgColor1, bgColor2;
 
 float orb(vec3 p) {
     // orb time
@@ -72,7 +72,7 @@ void main() {
     hurricane(hurricane_col, gl_FragCoord.xy);
 
     vec2 uv = gl_FragCoord.xy / resolution;
-    vec4 bg_gradient = vec4(mix(bgColor1, bgColor2, uv.x), 1);
+    vec4 bg_gradient = mix(bgColor1, bgColor2, uv.x);
     vec4 col = hurricane_col * hurricane_col.r + bg_gradient * (1 - bg_gradient.r);
     gl_FragColor = col;
 }

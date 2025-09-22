@@ -41,26 +41,26 @@ class Tween:
 
     @staticmethod
     def __ease_in_quad(t: float) -> float:
-        return t * t
+        return t*t
 
     @staticmethod
     def __ease_out_quad(t: float) -> float:
-        return 1 - t * t
+        return 1 - (t-1)*(t-1)
 
     @staticmethod
     def __ease_in_out_quad(t: float) -> float:
         if t < 0.5:
-            return 2 * t * t
+            return 2*t*t
         else:
-            return -2 * t * t + 4 * t - 1
+            return -2*t*t + 4*t - 1
 
     @staticmethod
     def __ease_in_cubic(t: float) -> float:
-        return t * t * t
+        return t*t*t
 
     @staticmethod
     def __ease_out_cubic(t: float) -> float:
-        return 1 - t * t * t
+        return 1 + (t-1)*(t-1)*(t-1)
 
     @staticmethod
     def __ease_in_out_cubic(t: float) -> float:
@@ -120,7 +120,7 @@ class Tween:
 
     def to_float(self, source: float, target: float,
                  duration: float, setter: Callable,
-                 onComplete: Callable = None, ease: Ease = Ease.InOutQuad) -> None:
+                 onComplete: Callable = None, ease: Ease = Ease.OutQuad) -> None:
         self.lerp_type = LerpType.Float
         self.src_float = source
         self.dst_float = target
@@ -128,7 +128,7 @@ class Tween:
 
     def to_vec2(self, source: Vector2, target: Vector2,
                 duration: float, setter: Callable,
-                onComplete: Callable = None, ease: Ease = Ease.InOutQuad) -> None:
+                onComplete: Callable = None, ease: Ease = Ease.OutQuad) -> None:
         self.lerp_type = LerpType.Vec2
         self.src_vec2 = source
         self.dst_vec2 = target
@@ -136,7 +136,7 @@ class Tween:
 
     def to_vec3(self, source: Vector3, target: Vector3,
                 duration: float, setter: Callable,
-                onComplete: Callable = None, ease: Ease = Ease.InOutQuad) -> None:
+                onComplete: Callable = None, ease: Ease = Ease.OutQuad) -> None:
         self.lerp_type = LerpType.Vec3
         self.src_vec3 = source
         self.dst_vec3 = target
@@ -144,7 +144,7 @@ class Tween:
 
     def to_color(self, source: Color, target: Color,
                  duration: float, setter: Callable,
-                 onComplete: Callable = None, ease: Ease = Ease.InOutQuad) -> None:
+                 onComplete: Callable = None, ease: Ease = Ease.OutQuad) -> None:
         self.lerp_type = LerpType.Color
         self.src_color = source
         self.dst_color = target
