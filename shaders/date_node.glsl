@@ -16,13 +16,13 @@ void main() {
     float d = min(scale, 0.99);
     float r = d * 0.5;
     float l = length(uv - enter);
-    float c = 1 - smoothstep(max(0, r-smoothDist), min(1, r+smoothDist), l);
-    vec4 col = color * c;
+    float c = 1 - smoothstep(max(0.01, r-smoothDist), min(0.99, r+smoothDist), l);
+    vec4 col = color;
 
     float inter = uv.x * uv.x;
     float alphaMul = smoothstep(0.08, 0.6, inter);
     alphaMul = mix(1, alphaMul, alphaLerp);
 
-    col.a = c * alphaMul;
+    col.a *= c * alphaMul;
     gl_FragColor = col;
 }

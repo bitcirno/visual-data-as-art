@@ -62,7 +62,7 @@ while is_running:
     hurricane_shader.send("density", density.get())
     hurricane_shader.send("moveSpeed", move_speed.get())
     hurricane_shader.send("noiseDetail", noise_scale.get())
-    hurricane = hurricane_shader.render()
+    hurricane = hurricane_shader.render(False)
     display.blit(hurricane, (0, 0))
 
     screen_shader.render()  # finally blit display surface to OpenGL screen

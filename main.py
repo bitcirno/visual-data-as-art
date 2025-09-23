@@ -6,49 +6,58 @@ Find some challenge!
 The main loop of the tropical-cyclone-visualizer application
 """
 
-import math
-import datetime
 import pygame
-import pygame_shaders
 from pygame.rect import Rect
 
 from data_fetcher import TCDataFetcher
 from visual_app.info_displayer import InfoDisplayer
 from visual_app.list_view import HoriNodeListView
+from visual_app.performance import Performance
 from visual_win import TCVisualWindow
 from visual_app.tc_background import TCBackground
-from visual_app.date_node import DateNode
 from context import AppContext
 from tween import Tween
 
+"""
+Recommended to only modify the parameters below!
+"""
+performance = Performance.Low  # one of Low, High, Ultra, as detailed below
+
+p = min(max(performance.value, 0), 2)
+resolution: tuple[int, int] = [(960, 540), (1440, 810), (1440, 810)][p]
+downscale_per: float = [4, 2, 1][p]
+downscale_reso: tuple[int, int] = round(resolution[0]/downscale_per), round(resolution[1]/downscale_per)
+fps: int = [60, 60, 120][p]
+print(f"{'[App]': <8} Launched with resolution: {resolution}, FPS: {fps}")
+
+"""
+End of parameter modification region.
+"""
+
 pygame.init()
 data_fetcher = TCDataFetcher()
-
-reso = (960, 540)
-# reso = (960/2*3, 540/2*3)
-win = TCVisualWindow(reso)  # Initialize the visual window
-ctx = AppContext(win, data_fetcher)  # build application contex
-
-# Initialize the application components
-bg = TCBackground(ctx, Rect(0, 0, *reso), "shaders/tropical_cyclone.glsl")
-ctx.bg = bg
-
-node_list_rect = Rect(0, 0, reso[0]*ctx.node_list_view_width_per, 10)
-node_list_rect.center = reso[0]/2, reso[1]/2 + reso[1]*ctx.node_list_view_offsetY
-node_list = HoriNodeListView(ctx, node_list_rect)
-ctx.node_list = node_list
-
-info_display_rect = Rect(reso[0]*ctx.info_pos_left_per, reso[1]*ctx.info_pos_top_per, 1, 1)
-info_display = InfoDisplayer(ctx, info_display_rect)
-ctx.info_display = info_display
-
-# fetch data
 data_fetcher.fetch_latest()
-data = data_fetcher.get_month_data(2025, 8)
-node_list.switch_date_nodes(data)
 
+# initialize the visual window and create app contex
+win = TCVisualWindow(resolution, fps=fps)
+ctx = AppContext(win, performance, data_fetcher)
 
-# Main loop of the application
+# create app components
+bg = TCBackground(ctx, Rect(0, 0, *downscale_reso), "shaders/tropical_cyclone.glsl")
+
+node_list_rect = Rect(0, 0, resolution[0] * ctx.node_list_view_width_per, 10)
+node_list_rect.center = resolution[0] / 2, resolution[1] / 2 + resolution[1] * ctx.node_list_view_offsetY
+node_list = HoriNodeListView(ctx, node_list_rect)
+
+info_display_rect_tl = Rect(resolution[0] * ctx.info_pos_left_per, resolution[1] * ctx.info_pos_top_per, 1, 1)
+info_display_rect_tr = Rect(info_display_rect_tl)
+info_display_rect_tr.right = resolution[0] * (1 - ctx.info_pos_left_per)
+info_display = InfoDisplayer(ctx, info_display_rect_tl, info_display_rect_tr)
+
+# initiate app states
+win.final_init_app()
+
+# app main loop
 is_running = True
 while is_running:
 
@@ -81,3 +90,4 @@ while is_running:
 win.quit()
 pygame.quit()
 ctx.close()
+print(f"{'[App]': <8} Quit")

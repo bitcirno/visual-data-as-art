@@ -7,15 +7,14 @@ This class groups and manages all AppComponent is a list view
 
 import math
 import pygame
-from pygame import Surface
+from pygame import Surface, Color
 from pygame.rect import Rect
-from data_fetcher import TCData
+from data_fetcher import TCRecord
 from visual_app.tc_app_comp import AppContext, AppComponent
 from visual_app.date_node import DateNode
 
 
 class HoriNodeListView(AppComponent):
-
     months_str = {
         1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr",
         5: "May", 6: "Jun", 7: "Jul", 8: "Aug",
@@ -24,6 +23,7 @@ class HoriNodeListView(AppComponent):
 
     def __init__(self, ctx: AppContext, rect: Rect):
         super().__init__(ctx, rect.size)
+        ctx.node_list = self
         self.rect = rect
         self.count: int = 0
         self.nodes = []
@@ -38,11 +38,9 @@ class HoriNodeListView(AppComponent):
         self.month_label_rect: Rect = None
 
     def clear_date_nodes(self):
-        for i in range(self.count-1, -1, -1):
-            del self.nodes[i]
         self.nodes.clear()
 
-    def switch_date_nodes(self, data: list[TCData]):
+    def switch_date_nodes(self, data: list[TCRecord]):
         if len(data) == 0:
             return
 
@@ -57,33 +55,54 @@ class HoriNodeListView(AppComponent):
             size = self.node_size + size_offset[0]
             rect = Rect(0, 0, size, size)
             rect.center = self.rect.centerx, posY
-            node = DateNode(self.ctx, rect, data[0], 0, self.node_shader_path)
+            color = self.__sample_node_color(size_offset[0])
+            node = DateNode(self.ctx, rect, data[0], 0, color, self.node_shader_path)
             self.nodes.append(node)
             return
 
         posX = self.rect.left
         step = self.rect.width / (self.count - 1)
         for i in range(self.count):
-            x = posX + i*step
-            size = self.node_size + size_offset[i]
+            x = posX + i * step
+            s_offset = size_offset[i]
+            size = self.node_size + s_offset
             rect = Rect(0, 0, size, size)
             rect.center = x, posY
-            node = DateNode(self.ctx, rect, data[i], i, self.node_shader_path)
+            color = self.__sample_node_color(s_offset)
+            node = DateNode(self.ctx, rect, data[i], i, color, self.node_shader_path)
             self.nodes.append(node)
 
         first_node = self.nodes[0]
         month = first_node.tc_data.tc_start_date.month
-        self.month_text = self.ctx.info_month_txt_font.render(HoriNodeListView.months_str[month], True, "white")
+        self.month_text = self.ctx.info_month_txt_font.render(HoriNodeListView.months_str[month], True, self.ctx.white)
         self.month_text_rect = self.month_text.get_rect()
         self.month_text_rect.midright = first_node.rect.midleft
-        self.month_label = self.ctx.info_month_label_font.render(str(first_node.tc_data.tc_start_date.year), True, "white")
+        self.month_label = self.ctx.info_month_label_font.render(str(first_node.tc_data.tc_start_date.year),
+                                                                 True, self.ctx.not_that_white)
         self.month_label_rect = self.month_label.get_rect()
         self.month_label_rect.midtop = self.month_text_rect.midbottom
 
-    def __get_node_size_offset(self, data: list[TCData]) -> list[float]:
+        # select the first date by default
+        # self.ctx.info_display.set_display_data(first_node.tc_data)
+
+    def __sample_node_color(self, node_size_offset) -> Color:
+        c1 = self.ctx.nodes_gradient_col1
+        c2 = self.ctx.nodes_gradient_col2
+        thresh = self.ctx.nodes_gradient_thresh
+        min_v = 0.0
+        max_v = self.ctx.node_size_offset_max
+        diff_v = max_v - min_v
+        req = node_size_offset / diff_v
+        if req < thresh:
+            return c1
+        per = (req - thresh) / (1 - thresh)  # relative percentage above threshold
+        per = pygame.math.clamp(per, 0, 1)
+        return c1.lerp(c2, per)
+
+    def __get_node_size_offset(self, data: list[TCRecord]) -> list[float]:
         length = len(data)
         if length == 0:
-            return [None]
+            return [0.0]
         if length == 1:
             return [self.ctx.dnode_type_size_impact[data[0].tc_type]]
 
@@ -92,9 +111,9 @@ class HoriNodeListView(AppComponent):
         dwt = self.ctx.dnode_size_weights_dist
         imp = self.ctx.dnode_type_size_impact
         for i in range(length):
-            offset = 0
-            for c in range(max(i-swin,0), min(i+swin,length)):
-                dist_w = dwt[abs(i-c)]
+            offset = imp[data[i].tc_type_short]
+            for c in range(max(i - swin, 0), min(i + swin, length)):
+                dist_w = dwt[abs(i - c)]
                 impact = imp[data[c].tc_type_short]
                 offset += dist_w * impact
                 ret[i] = offset
@@ -134,4 +153,3 @@ class HoriNodeListView(AppComponent):
         # render month text
         self.ctx.win.display.blit(self.month_text, self.month_text_rect)
         self.ctx.win.display.blit(self.month_label, self.month_label_rect)
-

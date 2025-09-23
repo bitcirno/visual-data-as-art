@@ -170,6 +170,8 @@ class Tween:
         if not is_already_active:
             Tween.active_tweens.append(self)  # add to active tweens list
 
+        self.__step()  # step once
+
     def __step(self):
         """
         Update value interpolation by a step

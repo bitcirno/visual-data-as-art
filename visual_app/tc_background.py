@@ -10,6 +10,7 @@ import pygame_shaders
 from pygame.color import Color
 from pygame.surface import Surface
 from pygame_shaders import Shader
+from visual_app.performance import Performance
 from visual_app.tc_app_comp import AppComponent
 from visual_win import TCVisualWindow
 from context import AppContext
@@ -47,10 +48,18 @@ class TCBackground(AppComponent):
     Tropical cyclone background class
     """
 
-    def __init__(self, ctx: AppContext, rect: Rect, frag_shader_path: str):
-        super().__init__(ctx, rect)
-        self.efx_shader = Shader(pygame_shaders.DEFAULT_VERTEX_SHADER, frag_shader_path, ctx.win.display)
-        self.efx_shader.send("resolution", ctx.win.resolution)
+    def __init__(self, ctx: AppContext, downscale_rect: Rect, frag_shader_path: str):
+        super().__init__(ctx, downscale_rect)
+        ctx.bg = self
+
+        p = self.ctx.performance
+        if p == Performance.Ultra:
+            self.render_target = Surface(ctx.win.resolution)
+        else:
+            self.render_target = Surface(downscale_rect.size)
+
+        self.efx_shader = Shader(pygame_shaders.DEFAULT_VERTEX_SHADER, frag_shader_path, self.render_target)
+        self.efx_shader.send("resolution", self.render_target.get_rect().size)
 
         self.bg_col1_tween = Tween()
         self.bg_col2_tween = Tween()
@@ -63,14 +72,16 @@ class TCBackground(AppComponent):
 
         # profiles defining background effect parameters
         self.tc_type_profile = {
-            "": TCBgProfile(col1=Color(66, 171, 185, 255), col2=Color(39, 80, 164, 255), fade_scale=35),
+            "null": TCBgProfile(col1=Color(66, 190, 210, 255), col2=Color(39, 80, 164, 255),
+                                fade_scale=18, swing_arms=18,
+                                density=0.86, move_speed=0.05, noise_detail=0.0),
 
             "TD": TCBgProfile(col1=Color(45, 171, 185, 255), col2=Color(39, 80, 144, 255),
-                              fade_scale=7, rot_velocity=0.1, swing_arms=12.408,
+                              fade_scale=5.2, rot_velocity=0.1, swing_arms=4.6,
                               density=1.57, move_speed=0.05, noise_detail=0.0),
 
             "TS": TCBgProfile(col1=Color(49, 71, 85, 255), col2=Color(56, 178, 221, 255),
-                              fade_scale=3.0, rot_velocity=0.1, swing_arms=5.4526,
+                              fade_scale=3.0, rot_velocity=0.1, swing_arms=4.1,
                               density=1.0, move_speed=0.1, noise_detail=2.5),  # Default
 
             "STS": TCBgProfile(col1=Color(49, 71, 85, 255), col2=Color(38, 160, 218, 255),
@@ -87,13 +98,13 @@ class TCBackground(AppComponent):
 
             "SuperT": TCBgProfile(col1=Color(25, 18, 16, 255), col2=Color(83, 93, 221, 255),
                                   fade_scale=1.2, rot_velocity=16, swing_arms=0.7,
-                                  density=0.3, move_speed=18.1, noise_detail=17.7)
+                                  density=0.3, move_speed=18.1, noise_detail=15)
         }
-        default_type = "TS"
-        self.cur_profile: TCBgProfile = deepcopy(self.tc_type_profile[default_type])
-        self.apply_profile_by_tc_type(default_type)  # use the default profile
 
-        self.trigger = False
+        self.cur_tc_type = ""
+        default_tc_type = "TS"
+        self.cur_profile: TCBgProfile = deepcopy(self.tc_type_profile[default_tc_type])
+        self.apply_profile_by_tc_type(default_tc_type)  # use the default profile
 
     def __update_col1(self, color: Color):
         self.cur_profile.bg_col1 = color
@@ -128,6 +139,10 @@ class TCBackground(AppComponent):
         self.efx_shader.send("noiseDetail", v)
 
     def apply_profile_by_tc_type(self, tc_type: str):
+        if tc_type == self.cur_tc_type:
+            return
+
+        self.cur_tc_type = tc_type
         c = self.cur_profile
         d = self.tc_type_profile[tc_type]
 
@@ -140,12 +155,18 @@ class TCBackground(AppComponent):
         self.tc_swing_tween.to_float(c.swing_arms, d.swing_arms, duration, self.__update_swing)
         self.tc_rot_tween.to_float(c.rot_velocity, d.rot_velocity, 0.7, self.__update_rot)
         self.tc_move_tween.to_float(c.move_speed, d.move_speed, 0.8, self.__update_move)
-        self.tc_detail_tween.to_float(c.noise_detail, d.noise_detail, 2, self.__update_detail)
+        self.tc_detail_tween.to_float(c.noise_detail, d.noise_detail, 1.0, self.__update_detail)
 
     def render(self):
         self.efx_shader.send("time", self.ctx.win.app_time)
-        hurricane = self.efx_shader.render(False)
-        self.ctx.win.display.blit(hurricane, self.rect)
+        tc_out = self.efx_shader.render(False)
+
+        p = self.ctx.performance
+        if p != Performance.Ultra:
+            tc_out = pygame.transform.smoothscale(tc_out, self.ctx.win.resolution)
+            # pass
+
+        self.ctx.win.display.blit(tc_out, (0, 0))
 
     def update(self):
         ...
