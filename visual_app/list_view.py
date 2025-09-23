@@ -49,10 +49,13 @@ class HoriNodeListView(AppComponent):
         if len(self.nodes) > 0:
             self.clear_date_nodes()  # clear previous nodes
 
+        size_offset = self.__get_node_size_offset(data)  # get size weights, sever types will affect neighbor nodes
+
         posY = self.rect.centery
         self.count = len(data)
         if self.count == 1:
-            rect = Rect(0, 0, self.node_size, self.node_size)
+            size = self.node_size + size_offset[0]
+            rect = Rect(0, 0, size, size)
             rect.center = self.rect.centerx, posY
             node = DateNode(self.ctx, rect, data[0], 0, self.node_shader_path)
             self.nodes.append(node)
@@ -62,19 +65,41 @@ class HoriNodeListView(AppComponent):
         step = self.rect.width / (self.count - 1)
         for i in range(self.count):
             x = posX + i*step
-            rect = Rect(0, 0, self.node_size, self.node_size)
+            size = self.node_size + size_offset[i]
+            rect = Rect(0, 0, size, size)
             rect.center = x, posY
             node = DateNode(self.ctx, rect, data[i], i, self.node_shader_path)
             self.nodes.append(node)
 
         first_node = self.nodes[0]
         month = first_node.tc_data.tc_start_date.month
-        self.month_text = self.ctx.info_month_txt_font.render(f"{month} ", True, "white")
+        self.month_text = self.ctx.info_month_txt_font.render(HoriNodeListView.months_str[month], True, "white")
         self.month_text_rect = self.month_text.get_rect()
         self.month_text_rect.midright = first_node.rect.midleft
-        self.month_label = self.ctx.info_month_label_font.render(HoriNodeListView.months_str[month], True, "white")
+        self.month_label = self.ctx.info_month_label_font.render(str(first_node.tc_data.tc_start_date.year), True, "white")
         self.month_label_rect = self.month_label.get_rect()
         self.month_label_rect.midtop = self.month_text_rect.midbottom
+
+    def __get_node_size_offset(self, data: list[TCData]) -> list[float]:
+        length = len(data)
+        if length == 0:
+            return [None]
+        if length == 1:
+            return [self.ctx.dnode_type_size_impact[data[0].tc_type]]
+
+        ret = [0.0] * length
+        swin = self.ctx.dnode_impact_half_win_length
+        dwt = self.ctx.dnode_size_weights_dist
+        imp = self.ctx.dnode_type_size_impact
+        for i in range(length):
+            offset = 0
+            for c in range(max(i-swin,0), min(i+swin,length)):
+                dist_w = dwt[abs(i-c)]
+                impact = imp[data[c].tc_type_short]
+                offset += dist_w * impact
+                ret[i] = offset
+        # print(ret)
+        return ret
 
     def update(self):
         pointer_pos: tuple = pygame.mouse.get_pos()

@@ -15,6 +15,7 @@ This module requests tropical cyclone data from Hong Kong Observatory (HKO).
 
 import requests
 import datetime
+import calendar
 import os
 
 
@@ -43,6 +44,7 @@ class TCDataFetcher:
     Requests the latest data from HKO and parse the data
     """
     tc_type2name = {
+        "": "Calm and Tranquil",
         "TD": "Tropical Depression",
         "TS": "Tropical Storm",
         "STS": "Severe Tropical Storm",
@@ -53,7 +55,7 @@ class TCDataFetcher:
 
     def __init__(self):
         self.tc_name_list = {}
-        self.tc_records : [TCData] = []
+        self.tc_records : [TCData] = []  # records are following the time series
 
     def fetch_latest(self):
         """
@@ -86,6 +88,41 @@ class TCDataFetcher:
 
         print("[DataFetcher] Fetched the latest tropical cyclone warning records")
 
+    def get_month_data(self, year: int, month: int) -> [TCData]:
+        """
+        Get the tropical cyclone data for a specific month
+        """
+        if len(self.tc_records) == 0:
+            self.fetch_latest()
+
+        _, num_days = calendar.monthrange(year, month)
+        dates = [None] * num_days
+
+        # Replace None by dates from start date to end date
+        find_nodes = False
+        for n in self.tc_records:
+            s_date = n.tc_start_date
+            e_date = n.tc_end_date
+            if s_date.year == year and s_date.month == month:
+                find_nodes = True
+                for day in range(s_date.day, e_date.day+1):
+                    dates[day-1] = n
+            else:
+                if find_nodes:
+                    break
+
+        # Fill the remaining None with no_tc data
+        i: int
+        for i in range(len(dates)):
+            if dates[i]:
+                continue
+            e_date = TCData()
+            e_date.tc_start_date = datetime.date(year=year, month=month, day=i+1)
+            e_date.tc_start_date = datetime.date(year=year, month=month, day=i+1)
+            dates[i] = e_date
+
+        return dates
+
     def __fetch_name_list(self):
         """
         Get the tropical cyclone name list
@@ -105,6 +142,7 @@ class TCDataFetcher:
                 continue
             # print(name_label)
             self.tc_name_list[name_label[0]] = name_label[1]
+        self.tc_name_list[""] = " "
         # print(self.tc_name_list)
 
     def __parse_to_TCData(self, raw: [str]) -> TCData:
@@ -132,3 +170,4 @@ class TCDataFetcher:
 if __name__ == "__main__":
     data_fetcher = TCDataFetcher()
     data_fetcher.fetch_latest()
+    print(data_fetcher.get_month_data(2025, 8))

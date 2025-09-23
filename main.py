@@ -44,7 +44,7 @@ ctx.info_display = info_display
 
 # fetch data
 data_fetcher.fetch_latest()
-data = data_fetcher.tc_records[-31:]
+data = data_fetcher.get_month_data(2025, 8)
 node_list.switch_date_nodes(data)
 
 

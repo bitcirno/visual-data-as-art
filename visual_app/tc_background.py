@@ -63,6 +63,8 @@ class TCBackground(AppComponent):
 
         # profiles defining background effect parameters
         self.tc_type_profile = {
+            "": TCBgProfile(col1=Color(66, 171, 185, 255), col2=Color(39, 80, 164, 255), fade_scale=35),
+
             "TD": TCBgProfile(col1=Color(45, 171, 185, 255), col2=Color(39, 80, 144, 255),
                               fade_scale=7, rot_velocity=0.1, swing_arms=12.408,
                               density=1.57, move_speed=0.05, noise_detail=0.0),

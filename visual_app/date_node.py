@@ -85,6 +85,7 @@ class DateNode(AppButton):
             txt_rect = txt.get_rect()
             txt_rect.centerx = self.rect.centerx
             txt_rect.top = self.rect.bottom
+            txt_rect.y -= self.ctx.win.resolution[1] * self.ctx.date_node_date_text_offsetY
             self.ctx.win.display.blit(txt, txt_rect)
 
             label = self.ctx.node_date_label_font.render(self.date_label, True, "white")
