@@ -1,4 +1,5 @@
 [//]: # (Reference: https://github.com/Rostave/Best-README-Template by othneildrew)
+<a id="readme-top"></a>
 <!-- PROJECT SHIELDS -->
 <!--
 *** I'm using markdown "reference style" links for readability.
@@ -51,6 +52,7 @@
   </ol>
 </details>
 
+-------------------
 
 
 <!-- ABOUT THE PROJECT -->
@@ -58,16 +60,43 @@
 
 ![demo_img1](repo_img/demo_img1.png)
 ![demo_img1](repo_img/demo_img2.png)
+![tc)types_img](repo_img/tc-types.png)
 
-This project is named the **Tropical Cyclone Calendar (TCC)**.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-This project visualizes the Tropical Cyclones (TCs) records obtained from the Hong Kong Observatory (HKO). 
-This app provides a calendar view of dates of month, the more severe the TC was, the bigger and date nodes are.
+### Tropical Cyclone Calendar
 
-In this app, you can:
-* **hover your pointer on date nodes** to get a specific view of the TC that day, with the background illustrating
-a simple TC simulation. 
-* **scroll the mouse middle button** or **press PageUp, PageDown** to switch the month for viewing past records.
+The Tropical Cyclone Calendar (TCC) is an interactive data visualization application 
+designed to present historical records of tropical cyclones (TCs) based on data from
+the Hong Kong Observatory (HKO). Built with Python and Pygame, and enhanced by Pygame Shaders, 
+TCC offers an engaging and intuitive way to explore the occurrence and severity of 
+tropical cyclones throughout the year.
+
+### Visual Design and Features
+
+* **Calendar View.**
+At the bottom of the interface, a row of circular nodes represents the days of the selected month. 
+Each node acts as a date button. The size of each node visually encodes the severity of the tropical 
+cyclone recorded on that day—the more severe the TC, the larger the node. This allows users to quickly 
+identify significant events at a glance.
+
+
+* **Interactive Exploration.**
+Hovering your pointer over a date node reveals detailed information about the tropical cyclone that 
+occurred on that day. The left side of the screen displays the cyclone’s name (in both Chinese and English) 
+and its classification (e.g., Super Typhoon, Severe Tropical Storm). The right side provides additional details, 
+such as the warning signal issued and its timing.
+
+
+* **Dynamic Background Simulation.**
+The background of the application features a real-time, shader-based simulation of a tropical cyclone.
+This swirling visual effect not only enhances the atmosphere but also provides a contextual illustration of the 
+cyclone’s intensity and structure, making the data more immersive.
+
+
+* **Month Navigation.**
+Users can scroll the mouse wheel or use the PageUp and PageDown keys to switch between months, 
+allowing for easy browsing of past tropical cyclone records.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -99,9 +128,9 @@ _Of course you can use other package management tools!_
 ```sh
 python main.py
 ```
-_Now you may wait for the visualization window to launch. It may take a few seconds to request data online._
+_Now you may wait for the visualization window to launch which may take a few seconds to request data online._
 
-If everything goes well, you should see the output in the terminal:
+If everything goes well, you will see the output in terminal as shown below:
 ```
 [App]    Launched with resolution: (960, 540), FPS: 60
 [Data]   Fetching data from HKO...
@@ -151,11 +180,7 @@ Project Link: [https://github.com/bitcirno/visual-data-as-art](https://github.co
 * [香港天文台](https://www.hko.gov.hk/tc/informtc/tcMain.htm)
 * [Pygame](https://www.pygame.org/news)
 * [Pygame Shaders](https://github.com/ScriptLineStudios/pygame_shaders)
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Img Shields](https://shields.io)
 * [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -173,6 +198,4 @@ Project Link: [https://github.com/bitcirno/visual-data-as-art](https://github.co
 [issues-url]: https://github.com/bitcirno/visual-data-as-art/issues
 [license-shield]: https://img.shields.io/github/license/bitcirno/visual-data-as-art.svg?style=for-the-badge
 [license-url]: https://github.com/bitcirno/visual-data-as-art/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
+

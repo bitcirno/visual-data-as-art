@@ -1,3 +1,10 @@
 .idea/
 *.iml
 __pycache__/
+*.pptx
+repo_img/1.png
+repo_img/2.png
+repo_img/3.png
+repo_img/4.png
+repo_img/5.png
+repo_img/6.png
