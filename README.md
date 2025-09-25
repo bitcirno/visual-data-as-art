@@ -116,7 +116,7 @@ allowing for easy browsing of past tropical cyclone records.
 <!-- GETTING STARTED -->
 ## Getting Started
 
-You may run the app by following the steps below.
+You may run the app by the following steps.
 
 ### Prerequisites
   ```sh
