@@ -57,6 +57,13 @@ class TCVisualWindow:
                     self.is_left_pointer_down = True
             if event.type == pygame.MOUSEWHEEL:
                 self.switch_month(event.y)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    return True
+                if event.key == pygame.K_PAGEUP:
+                    self.switch_month(1)
+                elif event.key == pygame.K_PAGEDOWN:
+                    self.switch_month(-1)
         return False
 
     def __calculate_smooth_fps(self):

@@ -1,6 +1,8 @@
 """
 SID: 25098892g
 NAME: LUO DONGPU
+
+This scripts is used for searching the proper parameters for the tropical cyclone visualization shader
 """
 
 import pygame
@@ -8,7 +10,6 @@ import pygame_shaders
 from pygame_shaders import Shader
 import time
 import tkparam
-from pyglm import glm
 
 pygame.init()
 

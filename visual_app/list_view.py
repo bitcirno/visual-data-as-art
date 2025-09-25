@@ -54,9 +54,10 @@ class HoriNodeListView(AppComponent):
         if self.count == 1:
             size = self.node_size + size_offset[0]
             rect = Rect(0, 0, size, size)
+            evt_rect = Rect(0, 0, self.node_size, self.node_size)
             rect.center = self.rect.centerx, posY
             color = self.__sample_node_color(size_offset[0])
-            node = DateNode(self.ctx, rect, data[0], 0, color, self.node_shader_path)
+            node = DateNode(self.ctx, rect, evt_rect, data[0], 0, color, self.node_shader_path)
             self.nodes.append(node)
             return
 
@@ -68,8 +69,10 @@ class HoriNodeListView(AppComponent):
             size = self.node_size + s_offset
             rect = Rect(0, 0, size, size)
             rect.center = x, posY
+            evt_rect = Rect(rect)
+            evt_rect.size = self.node_size, self.node_size
             color = self.__sample_node_color(s_offset)
-            node = DateNode(self.ctx, rect, data[i], i, color, self.node_shader_path)
+            node = DateNode(self.ctx, rect, evt_rect, data[i], i, color, self.node_shader_path)
             self.nodes.append(node)
 
         first_node = self.nodes[0]
@@ -122,21 +125,22 @@ class HoriNodeListView(AppComponent):
 
     def update(self):
         pointer_pos: tuple = pygame.mouse.get_pos()
-        found_first_hover = False
         for node in self.nodes:
-            if node.pointer_evt_rect.collidepoint(pointer_pos) and not found_first_hover:
-                found_first_hover = True
-
+            if node.pointer_evt_rect.collidepoint(pointer_pos):
                 if node.is_hover:
-                    continue
+                    return
                 node.is_hover = True
                 node.on_enter()
+                if self.cur_sel_node:
+                    self.cur_sel_node.on_exit()
+                    self.cur_sel_node.is_hover = False
                 self.cur_sel_node = node
-            else:
-                if not node.is_hover:
-                    continue
-                node.is_hover = False
-                node.on_exit()
+                return
+            # else:
+            #     if not node.is_hover:
+            #         continue
+            #     node.is_hover = False
+            #     node.on_exit()
 
         if self.cur_sel_node and self.cur_sel_node.is_hover:
             if self.ctx.win.is_left_pointer_down:

@@ -58,8 +58,7 @@ info_display = InfoDisplayer(ctx, info_display_rect_tl, info_display_rect_tr)
 win.final_init_app()
 
 # app main loop
-is_running = True
-while is_running:
+while True:
 
     # early update of a frame
     win.early_update()

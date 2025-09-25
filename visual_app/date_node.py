@@ -23,12 +23,13 @@ from pygame_shaders import Shader
 
 
 class DateNode(AppButton):
-    def __init__(self, ctx:AppContext, rect: Rect, data: TCRecord, idx: int, color: Color, node_shader_path: str):
+    def __init__(self, ctx:AppContext,
+                 rect: Rect, evt_rect: Rect,
+                 data: TCRecord, idx: int, color: Color, node_shader_path: str):
         self.date_label: str = "th"
         super().__init__(ctx, rect, self.__get_date_text(data.tc_start_date))
         self.ori_rect = Rect(self.rect)
-        self.pointer_evt_rect = Rect(self.rect)
-        self.pointer_evt_rect.x -= self.rect.width/3
+        self.pointer_evt_rect = Rect(evt_rect)
         self.tc_data: TCRecord = data
         self.idx: int = idx
         self.date_text: Surface = None

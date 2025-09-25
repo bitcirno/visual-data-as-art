@@ -13,6 +13,7 @@ uniform float fadeScale, rotVelocity, swingArms, density, moveSpeed, noiseDetail
 uniform vec2 resolution;
 uniform vec4 bgColor1, bgColor2;
 
+// The orb lit the clouds around
 float orb(vec3 p) {
     // orb time
     float t = time * .1;
